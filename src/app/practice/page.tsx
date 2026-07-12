@@ -107,8 +107,8 @@ export default function LogScreen() {
         const finalContent = speechText 
           ? speechText 
           : (titleInput 
-              ? `Transcribed practice of "${titleInput}". Captured ${timer} seconds of audio reflection on scales, breathing rhythm, and intonation.`
-              : `Spoken reflection logged. Captured ${timer} seconds of audio session. Focused on dynamic control and timing precision.`);
+              ? `Transcribed practice of "${titleInput}". Captured ${timer} seconds of audio reflection.`
+              : `Spoken reflection logged. Captured ${timer} seconds of audio session.`);
 
         // Save session
         const session = await addSession(
