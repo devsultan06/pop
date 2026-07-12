@@ -1,5 +1,5 @@
 const apiKey = process.env.ELEVENLABS_API_KEY;
-const defaultVoiceId = process.env.ELEVENLABS_VOICE_ID || "21m00Tcm4TlvDq8ikWAM"; // Rachel
+const defaultVoiceId = process.env.ELEVENLABS_VOICE_ID || "CwhRBWXzGAHq8TQ4Fs17"; // Roger (premade free)
 
 export async function textToSpeech(text: string, customVoiceId?: string): Promise<string | null> {
   console.log(`Generating speech with ElevenLabs for text length: ${text.length}`);
