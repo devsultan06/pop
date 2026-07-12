@@ -353,6 +353,7 @@ export const PracticeProvider: React.FC<{ children: React.ReactNode }> = ({ chil
 
         setSessions((prev) => [newSession, ...prev]);
         setCurrentStreak(resData.currentStreak || 0);
+        setMaxStreak((prev) => Math.max(prev, resData.currentStreak || 0));
         
         setIsLoading(false);
         return newSession;
