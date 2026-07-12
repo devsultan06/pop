@@ -97,7 +97,7 @@ Return the response strictly as a JSON object matching this structure:
     });
 
     const timeoutPromise = new Promise<never>((_, reject) =>
-      setTimeout(() => reject(new Error("Gemini API call timed out")), 6500)
+      setTimeout(() => reject(new Error("Gemini API call timed out")), 15000)
     );
 
     const result = await Promise.race([generatePromise, timeoutPromise]);
@@ -147,7 +147,7 @@ Write a voiceover script summarizing their struggle, sweat, and ultimate triumph
 
     const generatePromise = model.generateContent(prompt);
     const timeoutPromise = new Promise<never>((_, reject) =>
-      setTimeout(() => reject(new Error("Gemini API call timed out")), 6500)
+      setTimeout(() => reject(new Error("Gemini API call timed out")), 15000)
     );
 
     const result = await Promise.race([generatePromise, timeoutPromise]);
