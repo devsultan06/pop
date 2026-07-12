@@ -91,13 +91,15 @@ export default function DashboardScreen() {
     
     const width = 300;
     const height = 80;
-    const padding = 10;
+    const paddingLeftRight = 10;
+    const paddingTop = 18;
+    const paddingBottom = 10;
     
     const maxVal = Math.max(3, ...weeklyTrendData.map((d) => d.count));
     
     const points = weeklyTrendData.map((d, index) => {
-      const x = padding + (index / (weeklyTrendData.length - 1)) * (width - 2 * padding);
-      const y = height - padding - (d.count / maxVal) * (height - 2 * padding);
+      const x = paddingLeftRight + (index / (weeklyTrendData.length - 1)) * (width - 2 * paddingLeftRight);
+      const y = height - paddingBottom - (d.count / maxVal) * (height - paddingTop - paddingBottom);
       return { x, y };
     });
 
@@ -113,13 +115,15 @@ export default function DashboardScreen() {
     
     const width = 300;
     const height = 80;
-    const padding = 10;
+    const paddingLeftRight = 10;
+    const paddingTop = 18;
+    const paddingBottom = 10;
     
     const maxVal = Math.max(3, ...weeklyTrendData.map((d) => d.count));
     
     return weeklyTrendData.map((d, index) => {
-      const x = padding + (index / (weeklyTrendData.length - 1)) * (width - 2 * padding);
-      const y = height - padding - (d.count / maxVal) * (height - 2 * padding);
+      const x = paddingLeftRight + (index / (weeklyTrendData.length - 1)) * (width - 2 * paddingLeftRight);
+      const y = height - paddingBottom - (d.count / maxVal) * (height - paddingTop - paddingBottom);
       return { x, y, val: d.count };
     });
   }, [weeklyTrendData]);
