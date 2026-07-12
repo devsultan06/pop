@@ -50,9 +50,9 @@ export default function MilestonesScreen() {
         <Button
           variant="ghost"
           size="sm"
-          onClick={() => {
+          onClick={async () => {
             if (confirm("Reset all logged practice sessions, streaks, and milestones back to defaults?")) {
-              clearData();
+              await clearData();
               window.location.reload();
             }
           }}

@@ -123,6 +123,20 @@ export async function querySnowflake(sqlText: string, binds: QueryParam[] = []):
 function handleMockQuery(sqlText: string, binds: QueryParam[]): any[] {
   const normalized = sqlText.toLowerCase().replace(/\s+/g, " ");
 
+  // Delete sessions
+  if (normalized.includes("delete from sessions")) {
+    const wallet = binds[0] as string;
+    mockDb.sessions = mockDb.sessions.filter((s) => s.WALLET_ADDRESS !== wallet);
+    return [];
+  }
+
+  // Delete milestones
+  if (normalized.includes("delete from milestones")) {
+    const wallet = binds[0] as string;
+    mockDb.milestones = mockDb.milestones.filter((m) => m.WALLET_ADDRESS !== wallet);
+    return [];
+  }
+
   // Insert session
   if (normalized.includes("insert into sessions")) {
     const [id, wallet, timestamp, type, title, content, feedback, sentiment, duration] = binds;

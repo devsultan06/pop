@@ -44,7 +44,7 @@ interface PracticeContextType {
   disconnectWallet: () => void;
   addSession: (type: "voice" | "text", content: string, title: string, duration: number, audioUrl?: string) => Promise<Session>;
   mintMilestone: (id: string) => Promise<void>;
-  clearData: () => void;
+  clearData: () => Promise<void>;
   refreshData: () => Promise<void>;
   toggleTheme: () => void;
   saveCustomVoice: (id: string) => void;
@@ -455,14 +455,25 @@ export const PracticeProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     setIsLoading(false);
   };
 
-  const clearData = () => {
+  const clearData = async () => {
     if (!wallet) return;
+    setIsLoading(true);
+    try {
+      await fetch("/api/clear", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ walletAddress: wallet }),
+      });
+    } catch (e) {
+      console.warn("Failed to clear database records. Local storage will still be reset.", e);
+    }
     localStorage.removeItem(`pop_sessions_${wallet}`);
     localStorage.removeItem(`pop_milestones_${wallet}`);
     setSessions([]);
     setMilestones(DEFAULT_MILESTONES);
     setCurrentStreak(0);
     setMaxStreak(0);
+    setIsLoading(false);
   };
 
   return (
