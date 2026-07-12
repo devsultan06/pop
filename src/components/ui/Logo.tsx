@@ -70,7 +70,7 @@ export const Logo: React.FC<LogoProps> = ({
       </svg>
 
       {showText && (
-        <div className="flex flex-col text-left">
+        <div className="hidden sm:flex flex-col text-left">
           <span className="font-serif font-medium text-lg leading-none text-ink tracking-tight">
             Proof of Practice
           </span>

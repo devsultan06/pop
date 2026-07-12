@@ -212,7 +212,7 @@ export default function PracticeLayout({
           })}
         </nav>
 
-        <div className="flex items-center gap-3.5">
+        <div className="flex items-center gap-2 sm:gap-3.5">
           {/* Customize AI Mentor Voice (Only visible when wallet connected) */}
           {wallet && (
             <button
@@ -255,8 +255,13 @@ export default function PracticeLayout({
           <StreakBadge />
           
           <div className="flex items-center gap-2 border border-border px-2.5 py-1.5 rounded-full bg-card-surface">
-            <span className="text-[9px] text-muted font-mono uppercase tracking-wider">
+            <span className="hidden sm:inline text-[9px] text-muted font-mono uppercase tracking-wider">
               {isDemoMode ? "Demo Mode" : truncatedWallet}
+            </span>
+            <span className="sm:hidden shrink-0 text-muted">
+              <svg className="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path d="M21 18v1c0 1.1-.9 2-2 2H5c-1.11 0-2-.9-2-2V5c0-1.1.89-2 2-2h14c1.1 0 2 .9 2 2v1h-9c-1.11 0-2-.9-2 2v8c0 1.1.89 2 2 2h9zm-9-2h10V8H12v8z" />
+              </svg>
             </span>
             <button 
               onClick={disconnectWallet}
