@@ -71,6 +71,14 @@ export default function PracticeLayout({
       const pubKeyStr = resp.publicKey.toBase58();
       setTempPublicKey(pubKeyStr);
 
+      // On localhost, bypass message signing to avoid Phantom's localhost API 400 bug
+      const isLocalhost = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1";
+      if (isLocalhost) {
+        console.log("Localhost detected: Bypassing signature verification.");
+        connectWallet(pubKeyStr);
+        return;
+      }
+
       // 2. Sign message challenge
       const message = "Proof of Practice authentication: Sign this challenge to verify your identity to the ledger.";
       const encodedMessage = new TextEncoder().encode(message);
