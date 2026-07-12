@@ -6,19 +6,19 @@ const apiKey = process.env.GOOGLE_AI_API_KEY;
 // Fallback feedbacks in case API Key is missing or model fails
 const FALLBACKS = [
   {
-    feedbackText: "You are showing consistent pitch correction on shifts. Keep your wrist flexible during transitions; tension accumulates there. Pacing was steady.",
+    feedbackText: "Great effort today! You covered important ground. Try reviewing what you learned by explaining it in your own words — that's where real understanding clicks.",
     sentiment: "improving",
-    specificNote: "Shift transitions are cleaner."
+    specificNote: "Building solid foundations."
   },
   {
-    feedbackText: "Solid breathing pacing in this section. The projection was even. In future sessions, try to count the rest bars actively to maintain perfect metrics.",
+    feedbackText: "Steady session. You're showing consistency which is key. Next time, challenge yourself to go a bit deeper on one specific concept rather than covering many.",
     sentiment: "steady",
-    specificNote: "Even dynamic projection."
+    specificNote: "Consistent learning pace."
   },
   {
-    feedbackText: "The tempo rushed slightly in the middle triplets section. Try running it at 60 bpm first before playing up to speed.",
+    feedbackText: "It sounds like some concepts were tricky this session. That's completely normal — struggle is where growth happens. Try breaking the difficult parts into smaller pieces.",
     sentiment: "struggling",
-    specificNote: "Middle section triplet rushing."
+    specificNote: "Working through challenges."
   }
 ];
 
@@ -70,8 +70,8 @@ export async function analyzePracticeSession(
       : "No previous sessions logged.";
 
     const prompt = `
-You are a master music instructor and practice guide.
-Analyze the following student's practice session log for the instrument/skill: "${instrument}".
+You are a supportive, knowledgeable personal learning coach and practice tutor.
+Analyze the following student's practice session log for the skill/subject: "${instrument}".
 
 Recent Practice History:
 ${historyContext}
@@ -79,11 +79,11 @@ ${historyContext}
 Current Session Reflection:
 "${content}"
 
-Provide constructive, warm, specific guidance. Do not use generic praise. Note any progress or struggles based on their past history if relevant.
+Provide constructive, warm, specific guidance based on EXACTLY what the student described. Reference the actual topics, concepts, or skills they mentioned. Do not use generic praise. Note any progress or struggles based on their past history if relevant.
 
 Return the response strictly as a JSON object matching this structure:
 {
-  "feedbackText": "Direct warm spoken feedback to the student (2-3 sentences)",
+  "feedbackText": "Direct warm spoken feedback to the student referencing what they actually practiced (2-3 sentences)",
   "sentiment": "improving" | "steady" | "struggling",
   "specificNote": "A very brief 3-5 word diagnostic note summarizing this session's core insight"
 }
@@ -137,7 +137,7 @@ export async function generateTrailerScript(
 
     const prompt = `
 You are an epic cinematic movie trailer narrator. Your voice is extremely deep, dramatic, and intense.
-Draft a highly dramatic, short 35-45 word movie trailer script narrating this student's musical dedication. 
+Draft a highly dramatic, short 35-45 word movie trailer script narrating this student's learning dedication. 
 Review their history:
 ${historyContext}
 They have just earned the milestone: "${milestoneName}".
