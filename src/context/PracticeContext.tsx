@@ -86,6 +86,7 @@ export const PracticeProvider: React.FC<{ children: React.ReactNode }> = ({ chil
   const [theme, setTheme] = useState<"light" | "dark">("light");
   const [customVoiceId, setCustomVoiceId] = useState<string | null>(null);
   const [isLoaded, setIsLoaded] = useState(false);
+  const [isDataLoaded, setIsDataLoaded] = useState(false);
 
   // Load initial theme from localStorage or system preference
   useEffect(() => {
@@ -143,6 +144,7 @@ export const PracticeProvider: React.FC<{ children: React.ReactNode }> = ({ chil
       setMilestones(DEFAULT_MILESTONES);
       setCurrentStreak(0);
       setMaxStreak(0);
+      setIsDataLoaded(false);
       return;
     }
 
@@ -210,11 +212,12 @@ export const PracticeProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     }
     
     setIsLoading(false);
+    setIsDataLoaded(true);
   };
 
   // Check and unlock milestones dynamically based on streaks/count
   useEffect(() => {
-    if (!wallet) return;
+    if (!wallet || !isDataLoaded) return;
 
     const localMilesKey = `pop_milestones_${wallet}`;
     const localSessKey = `pop_sessions_${wallet}`;
@@ -287,6 +290,7 @@ export const PracticeProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     setMilestones(DEFAULT_MILESTONES);
     setCurrentStreak(0);
     setMaxStreak(0);
+    setIsDataLoaded(false);
   };
 
   const saveCustomVoice = (voiceId: string) => {
