@@ -95,7 +95,7 @@ export async function mintMilestoneOnChain(
       recipient: recipientPubKey.toBase58(),
     });
 
-    const memoProgramId = new PublicKey("MemoSNDxoPyWMccGSt2kaap2DYxx7rxjCqE7qV181p");
+    const memoProgramId = new PublicKey("MemoSq4gqABAXKb96qnH8TysNcWxMyWCqXgDLGmfcHr");
     
     const memoInstruction = new TransactionInstruction({
       keys: [{ pubkey: authorityKeypair.publicKey, isSigner: true, isWritable: false }],
