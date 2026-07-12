@@ -55,9 +55,14 @@ export async function POST(request: Request) {
     const analysis = await analyzePracticeSession(content, history, instrument || "general");
     console.log("Gemini analysis completed:", analysis);
 
-    // 5. Query ElevenLabs for voice synthesis
+    // 5. Query ElevenLabs for voice synthesis (wrapped in try-catch for resilience)
     console.log(`Calling ElevenLabs speech synthesis (customVoiceId: ${customVoiceId || 'none'})...`);
-    const audioBase64 = await textToSpeech(analysis.feedbackText, customVoiceId);
+    let audioBase64: string | null = null;
+    try {
+      audioBase64 = await textToSpeech(analysis.feedbackText, customVoiceId);
+    } catch (speechError) {
+      console.error("ElevenLabs speech synthesis failed, continuing with text-only feedback:", speechError);
+    }
 
     // 6. Record session in Snowflake
     const sessionId = `session-${Date.now()}`;
