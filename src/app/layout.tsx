@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Fraunces, Inter } from "next/font/google";
 import { PracticeProvider } from "@/context/PracticeContext";
 import { ThemeWrapper } from "@/components/ThemeWrapper";
+import { Analytics } from "@vercel/analytics/react";
 import "./globals.css";
 
 const fraunces = Fraunces({
@@ -35,6 +36,7 @@ export default function RootLayout({
         <PracticeProvider>
           <ThemeWrapper>
             {children}
+            <Analytics />
           </ThemeWrapper>
         </PracticeProvider>
       </body>
