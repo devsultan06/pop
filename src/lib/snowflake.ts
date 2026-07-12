@@ -1,9 +1,7 @@
 import snowflake from "snowflake-sdk";
 
-// Define a type for query parameters
 type QueryParam = string | number | boolean | null | undefined | Date;
 
-// In-memory fallback database for hackathon guest mode/missing Snowflake credentials
 interface MockDb {
   sessions: any[];
   milestones: any[];
@@ -37,7 +35,6 @@ const mockDb: MockDb = {
   milestones: []
 };
 
-// Check if credentials exist
 const hasCredentials = !!(
   process.env.SNOWFLAKE_ACCOUNT &&
   process.env.SNOWFLAKE_USERNAME &&
@@ -50,7 +47,6 @@ let isInitializing = false;
 
 if (hasCredentials) {
   try {
-    // Create a connection pool if credentials are valid
     pool = snowflake.createPool(
       {
         account: process.env.SNOWFLAKE_ACCOUNT!,

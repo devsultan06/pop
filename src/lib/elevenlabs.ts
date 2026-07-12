@@ -1,11 +1,8 @@
 const apiKey = process.env.ELEVENLABS_API_KEY;
-const defaultVoiceId = process.env.ELEVENLABS_VOICE_ID || "CwhRBWXzGAHq8TQ4Fs17"; // Roger (premade free)
+const defaultVoiceId = process.env.ELEVENLABS_VOICE_ID || "CwhRBWXzGAHq8TQ4Fs17";
 
 export async function textToSpeech(text: string, customVoiceId?: string): Promise<string | null> {
-  console.log(`Generating speech with ElevenLabs for text length: ${text.length}`);
-
   if (!apiKey) {
-    console.log("ElevenLabs API Key not found. Speech synthesis will fall back to browser SpeechSynthesis.");
     return null;
   }
 
@@ -25,7 +22,7 @@ export async function textToSpeech(text: string, customVoiceId?: string): Promis
       signal: controller.signal,
       body: JSON.stringify({
         text,
-        model_id: "eleven_turbo_v2", // turbo v2 is fast and cost-effective
+        model_id: "eleven_turbo_v2",
         voice_settings: {
           stability: 0.5,
           similarity_boost: 0.75,
@@ -44,14 +41,12 @@ export async function textToSpeech(text: string, customVoiceId?: string): Promis
     const buffer = Buffer.from(arrayBuffer);
     const base64Audio = buffer.toString("base64");
     
-    console.log("ElevenLabs voice generation successful.");
     return `data:audio/mpeg;base64,${base64Audio}`;
   } catch (error) {
     if (customVoiceId) {
-      console.warn("Custom ElevenLabs voice failed, falling back to default voice:", error);
-      return textToSpeech(text); // Fallback recursively without customVoiceId
+      return textToSpeech(text);
     }
-    console.error("ElevenLabs synthesis failed, falling back to browser TTS:", error);
+    console.error("Speech synthesis failed:", error);
     return null;
   }
 }

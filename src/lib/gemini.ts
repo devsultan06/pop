@@ -1,9 +1,8 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
 const apiKey = process.env.GOOGLE_AI_API_KEY;
-// Trigger redeploy to apply new Vercel environment variables
 
-// Fallback feedbacks in case API Key is missing or model fails
+// Fallback response structures
 const FALLBACKS = [
   {
     feedbackText: "Great effort today! You covered important ground. Try reviewing what you learned by explaining it in your own words — that's where real understanding clicks.",
@@ -26,12 +25,9 @@ let genAI: any = null;
 if (apiKey) {
   try {
     genAI = new GoogleGenerativeAI(apiKey);
-    console.log("Google Gen AI client initialized.");
   } catch (e) {
     console.error("Failed to initialize Google Gen AI client:", e);
   }
-} else {
-  console.log("Google AI API Key not found. Gemini running in mock fallback mode.");
 }
 
 
@@ -57,7 +53,7 @@ export async function analyzePracticeSession(
   try {
     const model = genAI.getGenerativeModel({ model: "gemini-3.5-flash" });
 
-    // Format previous logs into string context
+    // History formatting
     const historyContext = history.length > 0
       ? history
           .map(

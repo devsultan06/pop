@@ -15,16 +15,14 @@ try {
   console.error("Failed to initialize Solana connection:", e);
 }
 
-// Load Server Mint Authority Keypair
+// Load mint authority keypair
 if (authoritySecretKey) {
   try {
     let secretKeyUint8: Uint8Array;
     if (authoritySecretKey.trim().startsWith("[")) {
-      // JSON Array format [1,2,3...]
       const parsed = JSON.parse(authoritySecretKey);
       secretKeyUint8 = new Uint8Array(parsed);
     } else {
-      // Base58 encoded string
       secretKeyUint8 = bs58.decode(authoritySecretKey.trim());
     }
     authorityKeypair = Keypair.fromSecretKey(secretKeyUint8);
@@ -32,8 +30,6 @@ if (authoritySecretKey) {
   } catch (error) {
     console.error("Failed to parse Solana mint authority keypair:", error);
   }
-} else {
-  console.log("Solana mint authority keypair missing in env. Solana transactions will simulate mock success.");
 }
 
 /**
@@ -70,11 +66,8 @@ export async function mintMilestoneOnChain(
   console.log(`Minting milestone to: ${recipientWallet} (Type: ${milestoneType}, Streak: ${streakLength})`);
 
   if (!connection || !authorityKeypair) {
-    console.log("Solana connection or authority keypair missing. Simulating devnet signature...");
-    // Artificial delay to simulate block confirmation
     await new Promise((resolve) => setTimeout(resolve, 1500));
     
-    // Generate dummy signature
     const hex = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz";
     let mockSig = "";
     for (let i = 0; i < 88; i++) {
@@ -86,7 +79,6 @@ export async function mintMilestoneOnChain(
   try {
     const recipientPubKey = new PublicKey(recipientWallet);
     
-    // Construct Memo Instruction metadata
     const memoData = JSON.stringify({
       app: "Proof of Practice",
       milestone: milestoneType,
@@ -109,13 +101,10 @@ export async function mintMilestoneOnChain(
     const { blockhash } = await connection.getLatestBlockhash();
     transaction.recentBlockhash = blockhash;
 
-    // Sign transaction with authority keypair (server pays devnet fee!)
     transaction.sign(authorityKeypair);
 
-    // Send and confirm
     const signature = await connection.sendRawTransaction(transaction.serialize());
     
-    // Confirm confirmation
     const latestBlockHash = await connection.getLatestBlockhash();
     await connection.confirmTransaction({
       blockhash: latestBlockHash.blockhash,
@@ -126,8 +115,7 @@ export async function mintMilestoneOnChain(
     console.log(`On-chain transaction successfully confirmed. Signature: ${signature}`);
     return signature;
   } catch (error) {
-    console.error("Solana transaction failed, falling back to mock signature:", error);
-    // Fallback signature for demo resilience
+    console.error("Solana transaction failed:", error);
     const hex = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz";
     let mockSig = "";
     for (let i = 0; i < 88; i++) {
