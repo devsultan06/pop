@@ -42,7 +42,13 @@ interface PracticeContextType {
   connectWallet: (address: string) => void;
   connectDemoMode: () => void;
   disconnectWallet: () => void;
-  addSession: (type: "voice" | "text", content: string, title: string, duration: number, audioUrl?: string) => Promise<Session>;
+  addSession: (
+    type: "voice" | "text",
+    content: string,
+    title: string,
+    duration: number,
+    audioUrl?: string,
+  ) => Promise<Session>;
   mintMilestone: (id: string) => Promise<void>;
   clearData: () => Promise<void>;
   refreshData: () => Promise<void>;
@@ -51,7 +57,9 @@ interface PracticeContextType {
   clearCustomVoice: () => void;
 }
 
-const PracticeContext = createContext<PracticeContextType | undefined>(undefined);
+const PracticeContext = createContext<PracticeContextType | undefined>(
+  undefined,
+);
 
 const formatDateStr = (date: Date) => {
   const y = date.getFullYear();
@@ -61,10 +69,34 @@ const formatDateStr = (date: Date) => {
 };
 
 const DEFAULT_MILESTONES: Milestone[] = [
-  { id: "1", name: "First Step", requirement: "Log your first practice session", unlocked: false, minted: false },
-  { id: "2", name: "Dedication Trio", requirement: "Reach a 3-day practice streak", unlocked: false, minted: false },
-  { id: "3", name: "Weekly Ritual", requirement: "Log 5 practice sessions in a single week", unlocked: false, minted: false },
-  { id: "4", name: "Half-Fortnight", requirement: "Reach a 7-day practice streak", unlocked: false, minted: false },
+  {
+    id: "1",
+    name: "First Step",
+    requirement: "Log your first practice session",
+    unlocked: false,
+    minted: false,
+  },
+  {
+    id: "2",
+    name: "Dedication Trio",
+    requirement: "Reach a 3-day practice streak",
+    unlocked: false,
+    minted: false,
+  },
+  {
+    id: "3",
+    name: "Weekly Ritual",
+    requirement: "Log 5 practice sessions in a single week",
+    unlocked: false,
+    minted: false,
+  },
+  {
+    id: "4",
+    name: "Half-Fortnight",
+    requirement: "Reach a 7-day practice streak",
+    unlocked: false,
+    minted: false,
+  },
 ];
 
 const MOCK_FEEDBACKS = [
@@ -72,10 +104,12 @@ const MOCK_FEEDBACKS = [
   "Excellent breath control on those sustained notes. You held the pitch steady. Next time, try to record in a slightly quieter space to hear the resonance better.",
   "That was a solid repetition. You corrected the pitch on bar 12 which you missed yesterday. That shows you're listening actively and adjusting.",
   "The pacing felt a bit rushed in the middle section. Try using a slower tempo first to get the fingers perfectly synced before speeding up again.",
-  "Very expressive playing! The emotional dynamic came through clearly. Keep working on the articulation of the fast passages."
+  "Very expressive playing! The emotional dynamic came through clearly. Keep working on the articulation of the fast passages.",
 ];
 
-export const PracticeProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+export const PracticeProvider: React.FC<{ children: React.ReactNode }> = ({
+  children,
+}) => {
   const [wallet, setWallet] = useState<string | null>(null);
   const [isDemoMode, setIsDemoMode] = useState(false);
   const [sessions, setSessions] = useState<Session[]>([]);
@@ -94,7 +128,9 @@ export const PracticeProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     if (storedTheme) {
       setTheme(storedTheme);
     } else if (typeof window !== "undefined") {
-      const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+      const prefersDark = window.matchMedia(
+        "(prefers-color-scheme: dark)",
+      ).matches;
       setTheme(prefersDark ? "dark" : "light");
     }
   }, []);
@@ -126,7 +162,9 @@ export const PracticeProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     if (storedWallet) {
       setWallet(storedWallet);
       setIsDemoMode(storedDemo === "true");
-      const storedVoice = localStorage.getItem(`pop_custom_voice_id_${storedWallet}`);
+      const storedVoice = localStorage.getItem(
+        `pop_custom_voice_id_${storedWallet}`,
+      );
       setCustomVoiceId(storedVoice);
     }
     setIsLoaded(true);
@@ -164,12 +202,15 @@ export const PracticeProvider: React.FC<{ children: React.ReactNode }> = ({ chil
       const dashRes = await fetch(`/api/dashboard?wallet=${wallet}`);
       if (dashRes.ok) {
         // If API succeeded, we can fetch all sessions or rely on dashboard mapping
-        // However, for the live sessions feed list on UI, we load them from localStorage, 
+        // However, for the live sessions feed list on UI, we load them from localStorage,
         // synchronized with Snowflake database values.
         console.log("Dashboard analytics loaded from database.");
       }
     } catch (e) {
-      console.warn("Could not sync with backend database APIs. Operating in local fallback mode.", e);
+      console.warn(
+        "Could not sync with backend database APIs. Operating in local fallback mode.",
+        e,
+      );
     }
 
     // Always keep LocalStorage state loaded as a resilient local replica
@@ -193,11 +234,16 @@ export const PracticeProvider: React.FC<{ children: React.ReactNode }> = ({ chil
           timestamp: d.toISOString(),
           duration: 90 + i * 20,
           type: i % 2 === 0 ? "text" : "voice",
-          title: i === 1 ? "Scale alignment practice" : i === 2 ? "Concerto tempo test" : "Bow speed alignment",
+          title:
+            i === 1
+              ? "Scale alignment practice"
+              : i === 2
+                ? "Concerto tempo test"
+                : "Bow speed alignment",
           content: `Reflecting on section ${i}. Metronome felt steady, articulation is improving but shifts are lazy.`,
           feedback: {
-            text: MOCK_FEEDBACKS[i % MOCK_FEEDBACKS.length]
-          }
+            text: MOCK_FEEDBACKS[i % MOCK_FEEDBACKS.length],
+          },
         });
       }
       setSessions(mockSessions);
@@ -210,7 +256,7 @@ export const PracticeProvider: React.FC<{ children: React.ReactNode }> = ({ chil
       setMilestones(DEFAULT_MILESTONES);
       localStorage.setItem(localMilesKey, JSON.stringify(DEFAULT_MILESTONES));
     }
-    
+
     setIsLoading(false);
     setIsDataLoaded(true);
   };
@@ -234,7 +280,9 @@ export const PracticeProvider: React.FC<{ children: React.ReactNode }> = ({ chil
         shouldUnlock = true;
       } else if (m.id === "3") {
         // 5 practices in rolling week
-        const sorted = [...sessions].map((s) => new Date(s.date).getTime()).sort();
+        const sorted = [...sessions]
+          .map((s) => new Date(s.date).getTime())
+          .sort();
         for (let i = 0; i < sorted.length; i++) {
           const start = sorted[i];
           const end = start + 7 * 24 * 60 * 60 * 1000;
@@ -249,12 +297,13 @@ export const PracticeProvider: React.FC<{ children: React.ReactNode }> = ({ chil
       return shouldUnlock ? { ...m, unlocked: true } : m;
     });
 
-    const changed = JSON.stringify(updatedMilestones) !== JSON.stringify(milestones);
+    const changed =
+      JSON.stringify(updatedMilestones) !== JSON.stringify(milestones);
     if (changed) {
       setMilestones(updatedMilestones);
       localStorage.setItem(localMilesKey, JSON.stringify(updatedMilestones));
     }
-    
+
     localStorage.setItem(localSessKey, JSON.stringify(sessions));
   }, [sessions, currentStreak, wallet]);
 
@@ -271,7 +320,7 @@ export const PracticeProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     // Generate a throwaway public key
     const kp = Keypair.generate();
     const address = kp.publicKey.toBase58();
-    
+
     setWallet(address);
     setIsDemoMode(true);
     localStorage.setItem("pop_wallet", address);
@@ -311,7 +360,7 @@ export const PracticeProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     content: string,
     title: string,
     duration: number,
-    audioUrl?: string
+    audioUrl?: string,
   ): Promise<Session> => {
     if (!wallet) throw new Error("No wallet connected");
 
@@ -328,38 +377,46 @@ export const PracticeProvider: React.FC<{ children: React.ReactNode }> = ({ chil
           title,
           duration,
           instrument: title || "general",
-          customVoiceId: customVoiceId // Send custom voice ID if set!
+          customVoiceId: customVoiceId, // Send custom voice ID if set!
         }),
       });
 
       if (response.ok) {
         const resData = await response.json();
-        
+
         const newSession: Session = {
           id: resData.sessionId,
           date: formatDateStr(new Date()),
           timestamp: new Date().toISOString(),
           duration,
           type,
-          title: title || (type === "voice" ? "Voice practice log" : "Text practice log"),
+          title:
+            title ||
+            (type === "voice" ? "Voice practice log" : "Text practice log"),
           content,
           audioUrl: audioUrl, // Keep original recording blob URL here
           feedbackAudioUrl: resData.audioUrl, // Store ElevenLabs synthesized tutor response отдельно
           feedback: {
             text: resData.feedbackText,
-            playDuration: Math.max(3, Math.round(resData.feedbackText.split(" ").length / 2))
-          }
+            playDuration: Math.max(
+              3,
+              Math.round(resData.feedbackText.split(" ").length / 2),
+            ),
+          },
         };
 
         setSessions((prev) => [newSession, ...prev]);
         setCurrentStreak(resData.currentStreak || 0);
         setMaxStreak((prev) => Math.max(prev, resData.currentStreak || 0));
-        
+
         setIsLoading(false);
         return newSession;
       }
     } catch (err) {
-      console.warn("Backend /api/log failed, falling back to local simulation:", err);
+      console.warn(
+        "Backend /api/log failed, falling back to local simulation:",
+        err,
+      );
     }
 
     // Local Fallback simulation if API is offline
@@ -372,20 +429,25 @@ export const PracticeProvider: React.FC<{ children: React.ReactNode }> = ({ chil
       timestamp: new Date().toISOString(),
       duration,
       type,
-      title: title || (type === "voice" ? "Voice practice log" : "Text practice log"),
+      title:
+        title ||
+        (type === "voice" ? "Voice practice log" : "Text practice log"),
       content,
       audioUrl,
       feedback: {
         text: feedbackText,
-        playDuration: Math.max(3, Math.round(feedbackText.split(" ").length / 2))
-      }
+        playDuration: Math.max(
+          3,
+          Math.round(feedbackText.split(" ").length / 2),
+        ),
+      },
     };
 
     setSessions((prev) => [newSession, ...prev]);
     // increment streak locally
     setCurrentStreak((prev) => prev + 1);
     setMaxStreak((prev) => Math.max(prev, currentStreak + 1));
-    
+
     setIsLoading(false);
     return newSession;
   };
@@ -406,37 +468,43 @@ export const PracticeProvider: React.FC<{ children: React.ReactNode }> = ({ chil
         body: JSON.stringify({
           walletAddress: wallet,
           milestoneType: targetMilestone.name,
-          streakLength: currentStreak
-        })
+          streakLength: currentStreak,
+        }),
       });
 
       if (response.ok) {
         const resData = await response.json();
-        
+
         const updated = milestones.map((m) => {
           if (m.id === id) {
             return {
               ...m,
               minted: true,
               txHash: resData.txSignature,
-              timestamp: new Date().toISOString()
+              timestamp: new Date().toISOString(),
             };
           }
           return m;
         });
 
         setMilestones(updated);
-        localStorage.setItem(`pop_milestones_${wallet}`, JSON.stringify(updated));
+        localStorage.setItem(
+          `pop_milestones_${wallet}`,
+          JSON.stringify(updated),
+        );
         setIsLoading(false);
         return;
       }
     } catch (err) {
-      console.warn("Backend /api/mint failed, simulating transaction success:", err);
+      console.warn(
+        "Backend /api/mint failed, simulating transaction success:",
+        err,
+      );
     }
 
     // Local Fallback simulation if API is offline
     await new Promise((resolve) => setTimeout(resolve, 2000));
-    
+
     const dummyHex = "0123456789abcdef";
     let mockTx = "0x";
     for (let i = 0; i < 64; i++) {
@@ -449,7 +517,7 @@ export const PracticeProvider: React.FC<{ children: React.ReactNode }> = ({ chil
           ...m,
           minted: true,
           txHash: mockTx,
-          timestamp: new Date().toISOString()
+          timestamp: new Date().toISOString(),
         };
       }
       return m;
@@ -470,7 +538,10 @@ export const PracticeProvider: React.FC<{ children: React.ReactNode }> = ({ chil
         body: JSON.stringify({ walletAddress: wallet }),
       });
     } catch (e) {
-      console.warn("Failed to clear database records. Local storage will still be reset.", e);
+      console.warn(
+        "Failed to clear database records. Local storage will still be reset.",
+        e,
+      );
     }
     localStorage.removeItem(`pop_sessions_${wallet}`);
     localStorage.removeItem(`pop_milestones_${wallet}`);

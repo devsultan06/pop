@@ -54,7 +54,7 @@ export async function analyzePracticeSession(
   }
 
   try {
-    const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
+    const model = genAI.getGenerativeModel({ model: "gemini-3.5-flash" });
 
     // Format previous logs into string context
     const historyContext = history.length > 0
