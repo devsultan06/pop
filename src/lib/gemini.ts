@@ -1,6 +1,7 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
 const apiKey = process.env.GOOGLE_AI_API_KEY;
+// Trigger redeploy to apply new Vercel environment variables
 
 // Fallback feedbacks in case API Key is missing or model fails
 const FALLBACKS = [
@@ -129,7 +130,7 @@ export async function generateTrailerScript(
   }
 
   try {
-    const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
+    const model = genAI.getGenerativeModel({ model: "gemini-3.5-flash" });
     const historyContext = history.length > 0
       ? history.map((h, i) => `Log ${i + 1}: ${h.CONTENT || h.content || h.title || ""}`).join("\n")
       : "No practice logs found.";
