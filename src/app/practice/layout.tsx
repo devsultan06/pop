@@ -9,7 +9,6 @@ import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { Logo } from "@/components/ui/Logo";
 import { playSound } from "@/lib/sounds";
-import { VoiceCloneModal } from "@/components/ui/VoiceCloneModal";
 import bs58 from "bs58";
 
 export default function PracticeLayout({
@@ -21,7 +20,6 @@ export default function PracticeLayout({
   const { wallet, isDemoMode, connectWallet, connectDemoMode, disconnectWallet, theme, toggleTheme, customVoiceId } = usePractice();
   const [connectError, setConnectError] = useState("");
   const [isVerifying, setIsVerifying] = useState(false);
-  const [isVoiceModalOpen, setIsVoiceModalOpen] = useState(false);
 
   const navItems = [
     {
@@ -213,26 +211,7 @@ export default function PracticeLayout({
         </nav>
 
         <div className="flex items-center gap-2 sm:gap-3.5">
-          {/* Customize AI Mentor Voice (Only visible when wallet connected) */}
-          {wallet && (
-            <button
-              onClick={() => {
-                playSound("tap");
-                setIsVoiceModalOpen(true);
-              }}
-              className={`p-2 rounded-full border shrink-0 cursor-pointer focus:outline-none transition-all ${
-                customVoiceId
-                  ? "border-accent text-accent hover:bg-accent/5 bg-accent/5"
-                  : "border-border text-muted hover:text-ink hover:bg-border/30 bg-card-surface"
-              }`}
-              title="Personalize AI Mentor Voice"
-              aria-label="Personalize AI Mentor Voice"
-            >
-              <svg className="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm5.3-3c0 3-2.54 5.1-5.3 5.1S6.7 14 6.7 11H5c0 3.41 2.72 6.23 6 6.72V21h2v-3.28c3.28-.48 6-3.3 6-6.72h-1.7z" />
-              </svg>
-            </button>
-          )}
+
 
           <button
             onClick={() => {
@@ -298,8 +277,7 @@ export default function PracticeLayout({
         })}
       </nav>
 
-      {/* Voice Clone Modal Overlay */}
-      <VoiceCloneModal isOpen={isVoiceModalOpen} onClose={() => setIsVoiceModalOpen(false)} />
+
     </div>
   );
 }
