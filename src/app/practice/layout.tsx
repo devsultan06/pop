@@ -22,7 +22,6 @@ export default function PracticeLayout({
   const [connectError, setConnectError] = useState("");
   const [isVerifying, setIsVerifying] = useState(false);
   const [isVoiceModalOpen, setIsVoiceModalOpen] = useState(false);
-  const [tempPublicKey, setTempPublicKey] = useState("");
 
   const navItems = [
     {
@@ -69,47 +68,13 @@ export default function PracticeLayout({
       // 1. Connect wallet
       const resp = await solana.connect();
       const pubKeyStr = resp.publicKey.toBase58();
-      setTempPublicKey(pubKeyStr);
-
-      // On localhost, bypass message signing to avoid Phantom's localhost API 400 bug
-      const isLocalhost = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1";
-      if (isLocalhost) {
-        console.log("Localhost detected: Bypassing signature verification.");
-        connectWallet(pubKeyStr);
-        return;
-      }
-
-      // 2. Sign message challenge
-      const message = "Proof of Practice authentication: Sign this challenge to verify your identity to the ledger.";
-      const encodedMessage = new TextEncoder().encode(message);
       
-      const signedMessage = await solana.signMessage(encodedMessage, "utf8");
-      
-      // Convert signature to base58
-      const signatureBase58 = bs58.encode(signedMessage.signature);
-
-      // 3. Verify signature via backend API
-      const verifyRes = await fetch("/api/verify-wallet", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          walletAddress: pubKeyStr,
-          signature: signatureBase58,
-          message,
-        }),
-      });
-
-      if (!verifyRes.ok) {
-        const errorData = await verifyRes.json();
-        throw new Error(errorData.error || "Wallet signature verification failed.");
-      }
-
-      // Success
+      // Log in immediately upon connecting to avoid extension/domain message signing hangs
       connectWallet(pubKeyStr);
     } catch (err: any) {
       console.error("Wallet connection failed:", err);
       if (err.message && err.message.includes("User rejected")) {
-        setConnectError("Authentication cancelled. Please sign the message to verify wallet ownership.");
+        setConnectError("Connection cancelled. Please approve the connection request in Phantom.");
       } else {
         setConnectError(err.message || "Connection failed.");
       }
@@ -194,18 +159,6 @@ export default function PracticeLayout({
               )}
             </Button>
 
-            {tempPublicKey && (
-              <Button
-                variant="secondary"
-                onClick={() => {
-                  playSound("tap");
-                  connectWallet(tempPublicKey);
-                }}
-                className="py-2.5 text-xs border-dashed border-accent/40 hover:border-accent text-accent hover:bg-accent/5 cursor-pointer mt-1"
-              >
-                Bypass Signature (Connect Wallet Address Only)
-              </Button>
-            )}
 
             <div className="relative flex items-center justify-center my-1 text-[10px] text-muted font-mono uppercase tracking-wider">
               <span className="bg-card-surface px-2 z-10">or</span>
